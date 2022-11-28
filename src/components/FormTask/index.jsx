@@ -1,9 +1,29 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 
-export default function FormPropsTextFields() {
+export const initField = (id) => {
+  return {
+    id: `field-${id}`,
+    value: ''
+  }
+}
+
+const FormPropsTextFields = ({ session, updateSessionList, indexItem }) => {
+  const [state, setState] = useState(session)
+  const { fields } = state
+
+  const addField = () => {
+    setState({ ...state, fields: [...fields, initField(fields.length + 1)] })
+  }
+
+  const fieldHandler = (index, value) => {
+    let a = [...fields]
+    a[index] = { ...a[index], value: value }
+    setState(crr => ({ ...crr, fields: [...a] }))
+  }
+
   return (
     <Box
       component="form"
@@ -17,46 +37,37 @@ export default function FormPropsTextFields() {
         <TextField
           fullWidth
           required
-          label="Description"
-          defaultValue="Hello World"
-        />
-        <TextField
-          fullWidth
-          disabled
-          label="Disabled"
-          defaultValue="Hello World"
-        />
-        <TextField
-          fullWidth
-          label="Password"
-          type="password"
-          autoComplete="current-password"
-        />
-        <TextField
-          fullWidth
-          label="Read Only"
-          defaultValue="Hello World"
-          InputProps={{
-            readOnly: true,
+          label='Title'
+          value={state.title || ''}
+          onChange={(e) => {
+            setState(crr => ({ ...crr, title: e.target.value }))
           }}
         />
         <TextField
           fullWidth
-          label="Number"
-          type="number"
-          InputLabelProps={{
-            shrink: true,
+          label="Link"
+          value={state.link || ''}
+          onChange={(e) => {
+            setState(crr => ({ ...crr, link: e.target.value }))
           }}
         />
-        <TextField
-          fullWidth
-          label="Helper text"
-          defaultValue="Default Value"
-          helperText="Some important text"
-        />
+        {Boolean(fields.length) && fields.map((item, index) => (
+          <div key={item.id}>
+            <div style={{ margin: '15px 0' }}>
+              <TextField
+                fullWidth
+                label={`Field ${index + 1}`}
+                value={item.value || ''}
+                onChange={(e) => fieldHandler(index, e.target.value)}
+              />
+            </div>
+          </div>
+        ))}
       </div>
-      <Button variant="contained">Contained</Button>
-
+      <Button onClick={() => updateSessionList(indexItem, state)} variant="contained" style={{ marginRight: '10px' }}>Update</Button>
+      <Button onClick={addField} variant="contained">Add Field</Button>
     </Box>
   );
 }
+
+export default FormPropsTextFields
