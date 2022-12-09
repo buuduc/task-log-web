@@ -10,7 +10,7 @@ export const initField = (id) => {
   }
 }
 
-const FormPropsTextFields = ({ session, updateSessionList, indexItem }) => {
+const FormPropsTextFields = ({ session, updateSessionList, indexItem, DeleteSession }) => {
   const [state, setState] = useState(session)
   const { fields } = state
 
@@ -51,6 +51,14 @@ const FormPropsTextFields = ({ session, updateSessionList, indexItem }) => {
             setState(crr => ({ ...crr, link: e.target.value }))
           }}
         />
+        <TextField
+          fullWidth
+          label="Time"
+          value={state.hours || ''}
+          onChange={(e) => {
+            setState(crr => ({ ...crr, hours: e.target.value }))
+          }}
+        />
         {Boolean(fields.length) && fields.map((item, index) => (
           <div key={item.id}>
             <div style={{ margin: '15px 0' }}>
@@ -65,7 +73,8 @@ const FormPropsTextFields = ({ session, updateSessionList, indexItem }) => {
         ))}
       </div>
       <Button onClick={() => updateSessionList(indexItem, state)} variant="contained" style={{ marginRight: '10px' }}>Update</Button>
-      <Button onClick={addField} variant="contained">Add Field</Button>
+      <Button onClick={addField} variant="contained" style={{ marginRight: '10px' }} color='success'>Add Field</Button>
+      <Button onClick={() => DeleteSession(state.id)} variant="contained" color='error'>Delete</Button>
     </Box>
   );
 }
